@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+/* Dark theme variables (default) */
+:root {
+  --primary-color: #4A90E2;
+  --background-color: #121B2E;
+  --card-color: #1F2A48;
+  --text-color: #E0E0E0;
+  --text-color-darker: #A0A0A0;
+  --border-color: #3B4A74;
+}
+
+/* Light theme variables */
+body.light {
+  --primary-color: #2C5AA0;
+  --background-color: #FFFFFF;
+  --card-color: #F8F9FA;
+  --text-color: #2C3E50;
+  --text-color-darker: #6C757D;
+  --border-color: #DEE2E6;
+}
+
+/* Dark theme variables (explicit) */
+body.dark {
+  --primary-color: #4A90E2;
+  --background-color: #121B2E;
+  --card-color: #1F2A48;
+  --text-color: #E0E0E0;
+  --text-color-darker: #A0A0A0;
+  --border-color: #3B4A74;
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}

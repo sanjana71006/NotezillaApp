@@ -1,0 +1,113 @@
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 40px 0;
+}
+
+.auth-form-container {
+  background-color: var(--card-color);
+  padding: 40px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+}
+
+.auth-form-container h2 {
+  margin-top: 0;
+  font-size: 2rem;
+}
+
+.auth-form-container p {
+  color: var(--text-color-darker);
+  margin-bottom: 30px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.auth-form input, .role-select {
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-size: 1rem;
+}
+
+.role-select {
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+}
+
+.role-select option {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.auth-form button {
+  width: 100%;
+}
+
+.auth-link-text {
+  margin-top: 25px;
+  color: var(--text-color-darker);
+}
+
+.auth-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.message {
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.predefined-accounts {
+  margin: 25px 0;
+  padding: 15px;
+  background-color: rgba(74, 144, 226, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(74, 144, 226, 0.3);
+}
+
+.accounts-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--primary-color);
+}
+
+.account-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.account-info small {
+  font-size: 0.8rem;
+  color: var(--text-color-darker);
+  text-align: left;
+}

@@ -1,0 +1,54 @@
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background-color: var(--card-color);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.theme-toggle:hover {
+  background-color: var(--primary-color);
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+.theme-toggle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color);
+  transition: color 0.3s ease;
+}
+
+.theme-toggle:hover .theme-toggle-icon {
+  color: white;
+}
+
+/* Ensure the toggle is always visible above other content */
+.theme-toggle {
+  backdrop-filter: blur(10px);
+}
+
+/* Light theme specific adjustments */
+body.light .theme-toggle {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+body.light .theme-toggle:hover {
+  box-shadow: 0 4px 12px rgba(44, 90, 160, 0.3);
+}

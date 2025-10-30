@@ -1,0 +1,174 @@
+/* Import shared dashboard styles */
+@import '../AdminDashboard/AdminDashboard.css';
+
+/* Additional styles for Student Dashboard */
+.dashboard-section {
+  margin: 40px 0;
+}
+
+.dashboard-section h2 {
+  color: var(--text-color);
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+/* Notifications */
+.notifications-container {
+  background: var(--card-color);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+}
+
+.notification-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-item:hover {
+  background-color: var(--background-color);
+}
+
+.notification-icon {
+  font-size: 1.5rem;
+  margin-right: 15px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: white;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-content p {
+  margin: 0 0 5px 0;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.notification-time {
+  font-size: 0.85rem;
+  color: var(--text-color-darker);
+}
+
+/* Notes Grid */
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.note-card {
+  background: var(--card-color);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.note-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 123, 255, 0.1);
+}
+
+.note-card.featured {
+  border-color: var(--primary-color);
+  background: linear-gradient(135deg, var(--card-color) 0%, rgba(0, 123, 255, 0.05) 100%);
+}
+
+.note-card h4 {
+  color: var(--text-color);
+  margin: 0 0 10px 0;
+  font-size: 1.1rem;
+  line-height: 1.4;
+}
+
+.note-subject {
+  color: var(--primary-color);
+  font-weight: 600;
+  margin: 0 0 15px 0;
+  font-size: 0.9rem;
+}
+
+.note-meta {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
+  color: var(--text-color-darker);
+  font-size: 0.85rem;
+}
+
+.note-date {
+  color: var(--text-color-darker);
+  font-size: 0.8rem;
+  margin-bottom: 15px;
+}
+
+.note-download-btn {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.note-download-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Link styles for dashboard buttons */
+.dashboard-btn {
+  display: inline-block;
+  text-decoration: none;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-align: center;
+}
+
+.dashboard-btn:hover {
+  background-color: #0056b3;
+  text-decoration: none;
+  color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .notes-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .notification-item {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .notification-icon {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+}
