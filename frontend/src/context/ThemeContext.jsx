@@ -11,17 +11,13 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
-  // Initialize theme from localStorage or default to 'dark'
-  const [theme, setTheme] = useState(() => {
-    const savedTheme = localStorage.getItem('theme');
-    return savedTheme || 'dark';
-  });
+  // Initialize theme in-memory (no localStorage). Persisting per-user preferences should be handled by the backend.
+  const [theme, setTheme] = useState('dark');
 
   // Toggle between light and dark themes
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
   };
 
   // Apply theme to document body

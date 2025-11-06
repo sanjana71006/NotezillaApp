@@ -6,24 +6,12 @@ import './StudentDashboard.css';
 const StudentDashboard = () => {
   const { user } = useAuth();
 
-  // Mock data for demonstration
-  const recentNotes = [
-    { id: 1, title: "Data Structures - Arrays & Linked Lists", subject: "Computer Science", uploadedBy: "Dr. Smith", uploadDate: "2025-09-19", downloads: 45 },
-    { id: 2, title: "Calculus II - Integration Techniques", subject: "Mathematics", uploadedBy: "Prof. Johnson", uploadDate: "2025-09-18", downloads: 67 },
-    { id: 3, title: "Organic Chemistry - Reaction Mechanisms", subject: "Chemistry", uploadedBy: "Sarah Wilson", uploadDate: "2025-09-17", downloads: 32 }
-  ];
+  // Removed seeded/demo data — components will show real data when connected to API
+  const recentNotes = [];
 
-  const topNotes = [
-    { id: 1, title: "Physics - Quantum Mechanics Basics", subject: "Physics", downloads: 234, rating: 4.8 },
-    { id: 2, title: "Database Management - SQL Queries", subject: "Computer Science", downloads: 189, rating: 4.7 },
-    { id: 3, title: "Statistics - Probability Distributions", subject: "Mathematics", downloads: 156, rating: 4.6 }
-  ];
+  const topNotes = [];
 
-  const notifications = [
-    { id: 1, type: "upload", message: "New notes uploaded in Data Structures", time: "2 hours ago" },
-    { id: 2, type: "comment", message: "Someone replied to your question in Physics forum", time: "4 hours ago" },
-    { id: 3, type: "assignment", message: "New assignment posted in Calculus II", time: "1 day ago" }
-  ];
+  const notifications = [];
 
   return (
     <div className="dashboard">

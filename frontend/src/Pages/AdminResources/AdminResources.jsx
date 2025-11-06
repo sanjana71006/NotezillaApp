@@ -6,95 +6,11 @@ const AdminResources = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterBy, setFilterBy] = useState('all');
 
-  // Mock data for resources
+  // Removed seeded admin resource data. Start empty and fetch resources from backend.
   const resources = {
-    pending: [
-      {
-        id: 1,
-        title: 'Advanced Machine Learning Notes',
-        uploader: 'Alice Johnson',
-        uploaderEmail: 'alice.johnson@university.edu',
-        subject: 'Computer Science',
-        semester: '6th Semester',
-        fileType: 'PDF',
-        fileSize: '2.5 MB',
-        uploadDate: '2025-01-15',
-        status: 'pending',
-        tags: ['ML', 'AI', 'Notes'],
-        description: 'Comprehensive notes covering neural networks and deep learning algorithms.'
-      },
-      {
-        id: 2,
-        title: 'Calculus 2 Problem Solutions',
-        uploader: 'Bob Smith',
-        uploaderEmail: 'bob.smith@university.edu',
-        subject: 'Mathematics',
-        semester: '3rd Semester',
-        fileType: 'PDF',
-        fileSize: '1.8 MB',
-        uploadDate: '2025-01-14',
-        status: 'pending',
-        tags: ['Calculus', 'Solutions', 'Math'],
-        description: 'Step-by-step solutions to complex calculus problems.'
-      }
-    ],
-    approved: [
-      {
-        id: 3,
-        title: 'Physics Lab Manual',
-        uploader: 'Dr. Sarah Johnson',
-        uploaderEmail: 'sarah.johnson@university.edu',
-        subject: 'Physics',
-        semester: '4th Semester',
-        fileType: 'PDF',
-        fileSize: '3.2 MB',
-        uploadDate: '2025-01-10',
-        status: 'approved',
-        approvedBy: 'Admin User',
-        approvalDate: '2025-01-12',
-        downloads: 45,
-        tags: ['Lab', 'Experiments', 'Physics'],
-        description: 'Complete lab manual with all experiments and procedures.',
-        featured: true
-      },
-      {
-        id: 4,
-        title: 'Database Management Systems',
-        uploader: 'Charlie Brown',
-        uploaderEmail: 'charlie.brown@university.edu',
-        subject: 'Computer Science',
-        semester: '5th Semester',
-        fileType: 'DOCX',
-        fileSize: '1.9 MB',
-        uploadDate: '2025-01-08',
-        status: 'approved',
-        approvedBy: 'Admin User',
-        approvalDate: '2025-01-09',
-        downloads: 78,
-        tags: ['Database', 'SQL', 'Notes'],
-        description: 'Detailed notes on DBMS concepts and SQL queries.',
-        featured: false
-      }
-    ],
-    rejected: [
-      {
-        id: 5,
-        title: 'Incomplete Chemistry Notes',
-        uploader: 'David Wilson',
-        uploaderEmail: 'david.wilson@university.edu',
-        subject: 'Chemistry',
-        semester: '2nd Semester',
-        fileType: 'PDF',
-        fileSize: '0.8 MB',
-        uploadDate: '2025-01-13',
-        status: 'rejected',
-        rejectedBy: 'Admin User',
-        rejectionDate: '2025-01-14',
-        rejectionReason: 'Content is incomplete and contains multiple errors.',
-        tags: ['Chemistry', 'Incomplete'],
-        description: 'Basic chemistry notes (rejected due to incompleteness).'
-      }
-    ]
+    pending: [],
+    approved: [],
+    rejected: []
   };
 
   const filteredResources = resources[activeTab].filter(resource => {

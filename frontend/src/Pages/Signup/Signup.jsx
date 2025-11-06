@@ -11,27 +11,61 @@ const Signup = () => {
     password: '',
     role: 'Student' // Default role
   });
+  const [passwordValidation, setPasswordValidation] = useState({
+    length: false,
+    uppercase: false,
+    lowercase: false,
+    number: false
+  });
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { signup } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+
+    if (name === 'password') {
+      setPasswordValidation({
+        length: value.length >= 8,
+        uppercase: /[A-Z]/.test(value),
+        lowercase: /[a-z]/.test(value),
+        number: /[0-9]/.test(value)
+      });
+    }
   };
 
-  const handleSubmit = (e) => {
+  const validatePassword = (password) => {
+    if (password.length < 8) {
+      throw new Error('Password must be at least 8 characters long');
+    }
+    if (!/[A-Z]/.test(password)) {
+      throw new Error('Password must contain at least one uppercase letter');
+    }
+    if (!/[a-z]/.test(password)) {
+      throw new Error('Password must contain at least one lowercase letter');
+    }
+    if (!/[0-9]/.test(password)) {
+      throw new Error('Password must contain at least one number');
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
     setIsError(false);
-    
+    setIsLoading(true);
+
     try {
+      validatePassword(formData.password);
       // Create account (but don't auto-login)
-      const result = signup(formData);
-      setMessage(result.message);
+      await signup(formData);
+      setMessage('Account created successfully! Redirecting to login...');
       setIsError(false);
       
       // Clear form
@@ -45,6 +79,8 @@ const Signup = () => {
     } catch (error) {
       setMessage(error.message);
       setIsError(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -77,14 +113,32 @@ const Signup = () => {
             onChange={handleChange}
             required 
           />
-          <input 
-            type="password" 
-            name="password"
-            placeholder="Password" 
-            value={formData.password}
-            onChange={handleChange}
-            required 
-          />
+          <div className="password-input-container">
+            <input 
+              type="password" 
+              name="password"
+              placeholder="Password" 
+              value={formData.password}
+              onChange={handleChange}
+              required 
+            />
+            {formData.password && (
+              <div className="password-requirements">
+                <p className={passwordValidation.length ? 'valid' : 'invalid'}>
+                  ✓ At least 8 characters
+                </p>
+                <p className={passwordValidation.uppercase ? 'valid' : 'invalid'}>
+                  ✓ At least one uppercase letter
+                </p>
+                <p className={passwordValidation.lowercase ? 'valid' : 'invalid'}>
+                  ✓ At least one lowercase letter
+                </p>
+                <p className={passwordValidation.number ? 'valid' : 'invalid'}>
+                  ✓ At least one number
+                </p>
+              </div>
+            )}
+          </div>
           <select 
             name="role"
             value={formData.role}
@@ -96,7 +150,9 @@ const Signup = () => {
             <option value="Faculty">👩‍🏫 Faculty</option>
             <option value="Admin">👨‍💼 Admin</option>
           </select>
-          <Button isPrimary={true} type="submit">Create Account</Button>
+          <Button isPrimary={true} type="submit" disabled={isLoading}>
+            {isLoading ? 'Creating Account...' : 'Create Account'}
+          </Button>
         </form>
         
         <p className="auth-link-text">

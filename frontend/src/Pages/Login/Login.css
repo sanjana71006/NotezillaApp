@@ -39,6 +39,8 @@
   background-color: var(--background-color);
   color: var(--text-color);
   font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .role-select {
@@ -98,6 +100,38 @@
   font-weight: 600;
   margin-bottom: 10px;
   color: var(--primary-color);
+}
+
+.password-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-input-container input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.password-requirements {
+  margin-top: 5px;
+  padding: 10px;
+  background-color: var(--background-color);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.password-requirements p {
+  margin: 5px 0;
+  color: #dc3545;
+}
+
+.password-requirements p.valid {
+  color: #28a745;
+}
+
+.password-requirements p.invalid {
+  color: #dc3545;
 }
 
 .account-info {

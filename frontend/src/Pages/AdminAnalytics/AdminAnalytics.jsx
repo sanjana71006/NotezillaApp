@@ -5,52 +5,33 @@ const AdminAnalytics = () => {
   const [timeframe, setTimeframe] = useState('monthly');
   const [activeInsight, setActiveInsight] = useState('overview');
 
-  // Mock data for analytics
+  // Removed seeded analytics data. Use empty/default structure until real API data is available.
   const analyticsData = {
     overview: {
-      totalUsers: 2641,
-      totalResources: 1298,
-      totalDownloads: 45789,
-      totalComments: 8934,
-      growthRate: 12.5,
-      activeUsersToday: 342,
-      newUsersThisWeek: 67,
-      pendingApprovals: 23
+      totalUsers: 0,
+      totalResources: 0,
+      totalDownloads: 0,
+      totalComments: 0,
+      growthRate: 0,
+      activeUsersToday: 0,
+      newUsersThisWeek: 0,
+      pendingApprovals: 0
     },
     monthly: {
-      uploads: [45, 52, 48, 61, 55, 67, 72, 58, 49, 63, 71, 68],
-      downloads: [1200, 1450, 1320, 1680, 1550, 1820, 1920, 1650, 1480, 1750, 1890, 1720],
-      users: [180, 220, 195, 245, 210, 267, 285, 235, 198, 252, 278, 265]
+      uploads: Array(12).fill(0),
+      downloads: Array(12).fill(0),
+      users: Array(12).fill(0)
     },
-    subjects: [
-      { name: 'Computer Science', uploads: 342, downloads: 12840, percentage: 28 },
-      { name: 'Mathematics', uploads: 256, downloads: 9630, percentage: 21 },
-      { name: 'Physics', uploads: 198, downloads: 7420, percentage: 16 },
-      { name: 'Chemistry', uploads: 145, downloads: 5450, percentage: 12 },
-      { name: 'Engineering', uploads: 187, downloads: 7020, percentage: 15 },
-      { name: 'Others', uploads: 170, downloads: 6380, percentage: 8 }
-    ],
-    topContributors: [
-      { name: 'Dr. Sarah Johnson', role: 'Faculty', uploads: 45, downloads: 2340, score: 98 },
-      { name: 'Prof. Michael Chen', role: 'Faculty', uploads: 38, downloads: 1890, score: 94 },
-      { name: 'Alice Cooper', role: 'Student', uploads: 32, downloads: 1560, score: 87 },
-      { name: 'Dr. Emily Rodriguez', role: 'Faculty', uploads: 29, downloads: 1420, score: 85 },
-      { name: 'Bob Williams', role: 'Student', uploads: 25, downloads: 1180, score: 78 }
-    ],
-    recentActivity: [
-      { action: 'New Resource Upload', user: 'Charlie Brown', item: 'Advanced Calculus Notes', time: '2 minutes ago', type: 'upload' },
-      { action: 'High Download Activity', user: 'System Alert', item: 'Physics Lab Manual - 150 downloads in 1 hour', time: '15 minutes ago', type: 'alert' },
-      { action: 'New User Registration', user: 'Diana Prince', item: 'Faculty account pending approval', time: '1 hour ago', type: 'user' },
-      { action: 'Resource Flagged', user: 'Emma Wilson', item: 'Chemistry Notes - Chapter 3', time: '2 hours ago', type: 'flag' },
-      { action: 'Comment Added', user: 'Frank Miller', item: 'Database Management Systems', time: '3 hours ago', type: 'comment' }
-    ],
+    subjects: [],
+    topContributors: [],
+    recentActivity: [],
     systemMetrics: {
-      serverUptime: '99.8%',
-      avgResponseTime: '245ms',
-      storageUsed: '75%',
-      bandwidth: '2.3TB',
-      errorRate: '0.12%',
-      apiCalls: '156,420'
+      serverUptime: '0%',
+      avgResponseTime: '-',
+      storageUsed: '0%',
+      bandwidth: '-',
+      errorRate: '0%',
+      apiCalls: '0'
     }
   };
 

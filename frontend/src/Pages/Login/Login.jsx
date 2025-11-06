@@ -11,6 +11,7 @@ const Login = () => {
   });
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -21,15 +22,16 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
     setIsError(false);
+    setIsLoading(true);
     
     try {
       // Attempt to login with credentials
-      const result = login(formData);
-      setMessage(result.message);
+      const result = await login(formData);
+      setMessage('Login successful!');
       setIsError(false);
       
       // Navigate to appropriate dashboard based on role
@@ -51,6 +53,8 @@ const Login = () => {
     } catch (error) {
       setMessage(error.message);
       setIsError(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -83,7 +87,9 @@ const Login = () => {
             onChange={handleChange}
             required 
           />
-          <Button isPrimary={true} type="submit">Login</Button>
+          <Button isPrimary={true} type="submit" disabled={isLoading}>
+            {isLoading ? 'Logging in...' : 'Login'}
+          </Button>
         </form>
         
         <p className="auth-link-text">
