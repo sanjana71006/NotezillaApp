@@ -6,26 +6,17 @@ import './AdminDashboard.css';
 const AdminDashboard = () => {
   const { user } = useAuth();
 
-  // Mock data for demonstration
+  // Removed seeded admin dashboard data; values will be zero/empty until backend supplies real metrics
   const quickStats = {
-    totalUsers: { students: 2547, faculty: 89, admins: 5, total: 2641 },
-    totalResources: 1298,
-    totalDownloads: 45789,
-    totalComments: 8934
+    totalUsers: { students: 0, faculty: 0, admins: 0, total: 0 },
+    totalResources: 0,
+    totalDownloads: 0,
+    totalComments: 0
   };
 
-  const notifications = [
-    { id: 1, type: 'flag', message: 'New content flagged: "Physics Notes - Quantum Mechanics"', time: '10 minutes ago', priority: 'high' },
-    { id: 2, type: 'user', message: 'Suspicious login activity detected for user: alex.chen@university.edu', time: '1 hour ago', priority: 'medium' },
-    { id: 3, type: 'upload', message: '15 new resources uploaded in the last hour', time: '1 hour ago', priority: 'low' },
-    { id: 4, type: 'report', message: 'User report filed against inappropriate comment in Discussion Forums', time: '3 hours ago', priority: 'high' }
-  ];
+  const notifications = [];
 
-  const recentActivity = [
-    { action: 'New faculty registration', user: 'Dr. Sarah Mitchell', department: 'Computer Science', time: '2 hours ago' },
-    { action: 'Resource approved', resource: 'Database Management Systems - Complete Guide', uploader: 'Prof. John Davis', time: '4 hours ago' },
-    { action: 'User blocked', user: 'spam.user@email.com', reason: 'Spam content', time: '6 hours ago' }
-  ];
+  const recentActivity = [];
 
   return (
     <div className="dashboard admin-dashboard">

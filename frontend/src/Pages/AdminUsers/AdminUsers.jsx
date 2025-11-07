@@ -6,23 +6,11 @@ const AdminUsers = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterBy, setFilterBy] = useState('all');
 
-  // Mock data for users
+  // Removed seeded user data. Real user lists will be loaded from the API.
   const users = {
-    students: [
-      { id: 1, name: 'Alice Johnson', email: 'alice.johnson@university.edu', year: '2nd Year', semester: '4th Semester', joinDate: '2024-09-01', status: 'active', uploads: 15, downloads: 89, lastActive: '2 hours ago' },
-      { id: 2, name: 'Bob Smith', email: 'bob.smith@university.edu', year: '3rd Year', semester: '5th Semester', joinDate: '2023-08-15', status: 'active', uploads: 23, downloads: 156, lastActive: '1 day ago' },
-      { id: 3, name: 'Charlie Brown', email: 'charlie.brown@university.edu', year: '1st Year', semester: '2nd Semester', joinDate: '2025-01-10', status: 'blocked', uploads: 2, downloads: 12, lastActive: '1 week ago' },
-      { id: 4, name: 'Diana Prince', email: 'diana.prince@university.edu', year: '4th Year', semester: '7th Semester', joinDate: '2022-09-01', status: 'active', uploads: 45, downloads: 234, lastActive: '30 minutes ago' }
-    ],
-    faculty: [
-      { id: 1, name: 'Dr. Sarah Johnson', email: 'sarah.johnson@university.edu', department: 'Computer Science', joinDate: '2020-06-15', status: 'active', uploads: 67, courses: 5, lastActive: '3 hours ago' },
-      { id: 2, name: 'Prof. Michael Chen', email: 'michael.chen@university.edu', department: 'Mathematics', joinDate: '2018-08-20', status: 'pending', uploads: 34, courses: 3, lastActive: '2 days ago' },
-      { id: 3, name: 'Dr. Emily Rodriguez', email: 'emily.rodriguez@university.edu', department: 'Physics', joinDate: '2021-01-10', status: 'active', uploads: 89, courses: 7, lastActive: '1 hour ago' }
-    ],
-    admins: [
-      { id: 1, name: 'Admin User', email: 'admin@notezilla.com', role: 'Super Admin', joinDate: '2023-01-01', status: 'active', lastActive: 'Current session' },
-      { id: 2, name: 'John Administrator', email: 'john.admin@notezilla.com', role: 'Content Admin', joinDate: '2023-06-15', status: 'active', lastActive: '2 hours ago' }
-    ]
+    students: [],
+    faculty: [],
+    admins: []
   };
 
   const filteredUsers = users[activeTab].filter(user => {
