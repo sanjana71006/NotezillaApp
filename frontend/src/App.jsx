@@ -54,14 +54,24 @@ function App() {
               isAuthenticated ? <Navigate to={getDefaultDashboard()} /> : <Navigate to="/signup" />
             } 
           />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
+          <Route 
+            path="/signup" 
+            element={
+              isAuthenticated ? <Navigate to={getDefaultDashboard()} replace /> : <Signup />
+            } 
+          />
+          <Route 
+            path="/login" 
+            element={
+              isAuthenticated ? <Navigate to={getDefaultDashboard()} replace /> : <Login />
+            } 
+          />
           
           {/* Protected dashboard routes */}
           <Route 
             path="/admin-dashboard" 
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={['Admin']}>
                 <AdminDashboard />
               </ProtectedRoute>
             } 
@@ -69,7 +79,7 @@ function App() {
           <Route 
             path="/admin-users" 
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={['Admin']}>
                 <AdminUsers />
               </ProtectedRoute>
             } 
@@ -77,7 +87,7 @@ function App() {
           <Route 
             path="/admin-resources" 
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={['Admin']}>
                 <AdminResources />
               </ProtectedRoute>
             } 
@@ -85,7 +95,7 @@ function App() {
           <Route 
             path="/admin-reports" 
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={['Admin']}>
                 <AdminReports />
               </ProtectedRoute>
             } 
@@ -93,7 +103,7 @@ function App() {
           <Route 
             path="/admin-analytics" 
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={['Admin']}>
                 <AdminAnalytics />
               </ProtectedRoute>
             } 
@@ -101,7 +111,7 @@ function App() {
           <Route 
             path="/admin-settings" 
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={['Admin']}>
                 <AdminSettings />
               </ProtectedRoute>
             } 
@@ -109,7 +119,7 @@ function App() {
           <Route 
             path="/faculty-dashboard" 
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={['Faculty', 'Admin']}>
                 <FacultyDashboard />
               </ProtectedRoute>
             } 
@@ -162,6 +172,39 @@ function App() {
               <ProtectedRoute>
                 <Home />
               </ProtectedRoute>
+            } 
+          />
+          
+          {/* 404 Not Found - Catch all route */}
+          <Route 
+            path="*" 
+            element={
+              <div style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                minHeight: '60vh',
+                textAlign: 'center',
+                padding: '2rem'
+              }}>
+                <h1 style={{ fontSize: '4rem', margin: '0' }}>404</h1>
+                <h2>Page Not Found</h2>
+                <p>The page you're looking for doesn't exist.</p>
+                <a 
+                  href={isAuthenticated ? getDefaultDashboard() : '/login'} 
+                  style={{
+                    marginTop: '1rem',
+                    padding: '0.75rem 1.5rem',
+                    backgroundColor: '#007bff',
+                    color: 'white',
+                    textDecoration: 'none',
+                    borderRadius: '4px'
+                  }}
+                >
+                  Go to {isAuthenticated ? 'Dashboard' : 'Login'}
+                </a>
+              </div>
             } 
           />
         </Routes>

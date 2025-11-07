@@ -2,30 +2,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
-// Predefined system accounts
-const PREDEFINED_ACCOUNTS = [
-  {
-    id: 'admin-001',
-    username: 'Admin',
-    email: 'admin@notezilla.com',
-    password: 'Admin@123',
-    role: 'Admin'
-  },
-  {
-    id: 'faculty-001',
-    username: 'Faculty',
-    email: 'faculty@notezilla.com',
-    password: 'Faculty@123',
-    role: 'Faculty'
-  },
-  {
-    id: 'student-001',
-    username: 'Student',
-    email: 'student@notezilla.com',
-    password: 'Student@123',
-    role: 'Student'
-  }
-];
+// Backend API URL
+const API_URL = 'http://localhost:5000/api';
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -38,7 +16,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   // Initialize authentication state from localStorage
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return localStorage.getItem('isAuthenticated') === 'true';
+    return localStorage.getItem('token') !== null;
   });
   
   const [user, setUser] = useState(() => {
@@ -46,78 +24,110 @@ export const AuthProvider = ({ children }) => {
     return savedUser ? JSON.parse(savedUser) : null;
   });
   
-  // Initialize registered users from localStorage, including predefined accounts
-  const [registeredUsers, setRegisteredUsers] = useState(() => {
-    const savedUsers = localStorage.getItem('registeredUsers');
-    const userArray = savedUsers ? JSON.parse(savedUsers) : [];
-    
-    // Merge with predefined accounts (avoid duplicates)
-    const allUsers = [...PREDEFINED_ACCOUNTS];
-    userArray.forEach(user => {
-      if (!allUsers.find(u => u.email === user.email)) {
-        allUsers.push(user);
-      }
-    });
-    
-    // Save back to localStorage to ensure predefined accounts are always available
-    localStorage.setItem('registeredUsers', JSON.stringify(allUsers));
-    return allUsers;
-  });
+  const [registeredUsers, setRegisteredUsers] = useState([]);
 
-  const signup = (userData) => {
-    // Check if user already exists
-    const existingUser = registeredUsers.find(u => u.email === userData.email);
-    if (existingUser) {
-      throw new Error('User with this email already exists');
+  // Fetch current user on mount if token exists
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetchCurrentUser(token);
     }
-    
-    // Add user to registered users with role
-    const newUser = {
-      id: Date.now().toString(), // Simple ID generation
-      username: userData.username,
-      email: userData.email,
-      password: userData.password, // In real app, this would be hashed
-      role: userData.role || 'Student' // Default to Student if no role specified
-    };
-    
-    const updatedUsers = [...registeredUsers, newUser];
-    setRegisteredUsers(updatedUsers);
-    
-    // Save to localStorage
-    localStorage.setItem('registeredUsers', JSON.stringify(updatedUsers));
-    
-    return { success: true, message: 'Account created successfully!' };
+  }, []);
+
+  const fetchCurrentUser = async (token) => {
+    try {
+      const response = await fetch(`${API_URL}/auth/me`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user);
+        setIsAuthenticated(true);
+        localStorage.setItem('currentUser', JSON.stringify(data.user));
+      } else {
+        // Token invalid, clear storage
+        localStorage.removeItem('token');
+        localStorage.removeItem('currentUser');
+        setIsAuthenticated(false);
+        setUser(null);
+      }
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      localStorage.removeItem('token');
+      localStorage.removeItem('currentUser');
+      setIsAuthenticated(false);
+      setUser(null);
+    }
   };
 
-  const login = (credentials) => {
-    // Find user with matching email and password
-    const user = registeredUsers.find(
-      u => u.email === credentials.email && u.password === credentials.password
-    );
-    
-    if (!user) {
-      throw new Error('Invalid email or password');
+  const signup = async (userData) => {
+    try {
+      const response = await fetch(`${API_URL}/auth/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: userData.username,
+          email: userData.email,
+          password: userData.password,
+          role: userData.role || 'Student'
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Signup failed');
+      }
+
+      // Save token and user data
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('currentUser', JSON.stringify(data.user));
+      
+      setIsAuthenticated(true);
+      setUser(data.user);
+
+      return { success: true, message: 'Account created successfully!' };
+    } catch (error) {
+      throw new Error(error.message || 'Failed to create account');
     }
-    
-    // Set authenticated state
-    setIsAuthenticated(true);
-    setUser({
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      role: user.role
-    });
-    
-    // Save current user session to localStorage
-    localStorage.setItem('currentUser', JSON.stringify({
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      role: user.role
-    }));
-    localStorage.setItem('isAuthenticated', 'true');
-    
-    return { success: true, message: 'Login successful!', user: user };
+  };
+
+  const login = async (credentials) => {
+    try {
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: credentials.email,
+          password: credentials.password
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      // Save token and user data
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('currentUser', JSON.stringify(data.user));
+      
+      setIsAuthenticated(true);
+      setUser(data.user);
+
+      return { success: true, message: 'Login successful!', user: data.user };
+    } catch (error) {
+      throw new Error(error.message || 'Invalid email or password');
+    }
   };
 
   const logout = () => {
@@ -125,8 +135,8 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     
     // Clear session from localStorage
+    localStorage.removeItem('token');
     localStorage.removeItem('currentUser');
-    localStorage.removeItem('isAuthenticated');
   };
 
   const value = {

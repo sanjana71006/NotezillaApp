@@ -21,14 +21,14 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
     setIsError(false);
     
     try {
       // Attempt to login with credentials
-      const result = login(formData);
+      const result = await login(formData);
       setMessage(result.message);
       setIsError(false);
       

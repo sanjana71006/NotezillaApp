@@ -10,6 +10,13 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const resourceRoutes = require('./routes/resources');
 const adminRoutes = require('./routes/admin');
+const assignmentRoutes = require('./routes/assignments');
+const discussionRoutes = require('./routes/discussions');
+const notificationRoutes = require('./routes/notifications');
+const studyGroupRoutes = require('./routes/studyGroups');
+const progressRoutes = require('./routes/progress');
+const postRoutes = require('./routes/posts');
+const reportRoutes = require('./routes/reports');
 
 const app = express();
 
@@ -25,6 +32,13 @@ app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 app.use('/api/auth', authRoutes);
 app.use('/api/resources', resourceRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/assignments', assignmentRoutes);
+app.use('/api/discussions', discussionRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/study-groups', studyGroupRoutes);
+app.use('/api/progress', progressRoutes);
+app.use('/api/posts', postRoutes);
+app.use('/api/reports', reportRoutes);
 
 // Health
 app.get('/api/health', (req, res) => res.json({ ok: true }));
@@ -40,3 +54,4 @@ connectDB()
     console.error('Failed to connect to DB', err);
     process.exit(1);
   });
+

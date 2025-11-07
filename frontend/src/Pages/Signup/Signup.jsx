@@ -23,24 +23,36 @@ const Signup = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
     setIsError(false);
     
     try {
-      // Create account (but don't auto-login)
-      const result = signup(formData);
+      // Create account and auto-login
+      const result = await signup(formData);
       setMessage(result.message);
       setIsError(false);
       
       // Clear form
       setFormData({ username: '', email: '', password: '', role: 'Student' });
       
-      // Redirect to login page after successful signup
+      // Navigate to appropriate dashboard based on role after successful signup
       setTimeout(() => {
-        navigate('/login');
-      }, 2000);
+        switch(formData.role) {
+          case 'Admin':
+            navigate('/admin-dashboard');
+            break;
+          case 'Faculty':
+            navigate('/faculty-dashboard');
+            break;
+          case 'Student':
+            navigate('/student-dashboard');
+            break;
+          default:
+            navigate('/home');
+        }
+      }, 1500);
       
     } catch (error) {
       setMessage(error.message);
