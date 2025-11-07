@@ -1,5 +1,6 @@
 // API Configuration and Helper Functions
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Use relative path for Vercel deployment, fallback to localhost for development
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:5000/api');
 
 // Helper function to get auth headers
 const getAuthHeaders = () => {
