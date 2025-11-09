@@ -20,7 +20,8 @@ exports.signup = async (req, res) => {
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     });
-    res.json({ user: { id: user._id, username: user.username, email: user.email, role: user.role } });
+    // Also return token in JSON so SPAs can store it in localStorage if desired
+    res.json({ token, user: { id: user._id, username: user.username, email: user.email, role: user.role } });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
@@ -43,7 +44,8 @@ exports.login = async (req, res) => {
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
-    res.json({ user: { id: user._id, username: user.username, email: user.email, role: user.role } });
+    // Return token as well for SPA usage
+    res.json({ token, user: { id: user._id, username: user.username, email: user.email, role: user.role } });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });

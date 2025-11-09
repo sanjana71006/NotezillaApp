@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Upload.css';
+import { resourcesAPI } from '../../services/api';
 
 const Upload = () => {
   const [formData, setFormData] = useState({
@@ -132,15 +133,20 @@ const Upload = () => {
     setIsUploading(true);
 
     try {
-      // Simulate upload process
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Prepare multipart form data
+      const fd = new FormData();
+      fd.append('title', formData.title);
+      fd.append('description', formData.description);
+      fd.append('year', formData.year);
+      fd.append('semester', formData.semester);
+      fd.append('subject', formData.subject);
+      fd.append('examType', formData.examType);
+      fd.append('category', formData.category);
+      if (selectedFile) fd.append('file', selectedFile);
+      fd.append('isDraft', isDraft ? 'true' : 'false');
 
-      // Mock upload logic would go here
-      console.log('Upload data:', {
-        ...formData,
-        file: selectedFile,
-        isDraft
-      });
+      const res = await resourcesAPI.upload(fd);
+      console.log('Upload response:', res);
 
       setUploadSuccess(true);
       

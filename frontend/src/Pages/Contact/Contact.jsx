@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { contactsAPI } from '../../services/api';
 import './Contact.css';
 
 const Contact = () => {
@@ -113,27 +114,18 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      // Simulate form submission
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      console.log('Form submitted:', formData);
-      
+      // Send to backend
+      await contactsAPI.create(formData);
+
       setSubmitSuccess(true);
-      setFormData({
-        name: '',
-        email: '',
-        category: '',
-        message: ''
-      });
+      setFormData({ name: '', email: '', category: '', message: '' });
 
       // Hide success message after 5 seconds
-      setTimeout(() => {
-        setSubmitSuccess(false);
-      }, 5000);
+      setTimeout(() => setSubmitSuccess(false), 5000);
 
     } catch (error) {
       console.error('Submission error:', error);
-      setErrors({ submit: 'Failed to send message. Please try again.' });
+      setErrors({ submit: error.message || 'Failed to send message. Please try again.' });
     } finally {
       setIsSubmitting(false);
     }

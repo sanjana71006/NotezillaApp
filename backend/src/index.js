@@ -10,6 +10,7 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const resourceRoutes = require('./routes/resources');
 const adminRoutes = require('./routes/admin');
+const contactRoutes = require('./routes/contacts');
 const assignmentRoutes = require('./routes/assignments');
 const discussionRoutes = require('./routes/discussions');
 const notificationRoutes = require('./routes/notifications');
@@ -26,12 +27,19 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 // Static uploads
-app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+// Ensure uploads directory exists (multer doesn't create it automatically)
+const uploadsDir = path.join(__dirname, '..', 'uploads');
+const fs = require('fs');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+app.use('/uploads', express.static(uploadsDir));
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/resources', resourceRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/contacts', contactRoutes);
 app.use('/api/assignments', assignmentRoutes);
 app.use('/api/discussions', discussionRoutes);
 app.use('/api/notifications', notificationRoutes);

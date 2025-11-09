@@ -18,7 +18,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.get('/', resourceController.listResources);
-router.post('/', authenticate, authorizeRoles('Faculty', 'Admin'), upload.single('file'), resourceController.createResource);
+// Allow any authenticated user to upload resources (students can upload too)
+router.post('/', authenticate, upload.single('file'), resourceController.createResource);
 router.get('/:id', resourceController.getResource);
 router.put('/:id', authenticate, authorizeRoles('Faculty', 'Admin'), resourceController.updateResource);
 router.delete('/:id', authenticate, authorizeRoles('Admin'), resourceController.deleteResource);

@@ -26,7 +26,18 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 // Static uploads
-app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+// Ensure uploads directory exists for serverless environment
+const uploadsDir = path.join(__dirname, '..', 'uploads');
+const fs = require('fs');
+if (!fs.existsSync(uploadsDir)) {
+  try {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+    console.log('Created uploads directory at', uploadsDir);
+  } catch (err) {
+    console.error('Failed to create uploads directory:', err);
+  }
+}
+app.use('/uploads', express.static(uploadsDir));
 
 // Routes
 app.use('/api/auth', authRoutes);

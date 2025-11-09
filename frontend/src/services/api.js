@@ -77,11 +77,43 @@ export const resourcesAPI = {
   
   getById: (id) => apiCall(`/resources/${id}`),
   
+  // JSON based create (optional)
   create: (resourceData) => apiCall('/resources', {
     method: 'POST',
     body: JSON.stringify(resourceData)
   }),
-  
+
+  // Multipart/form-data upload for files. Accepts a FormData instance.
+  upload: async (formData) => {
+    try {
+      const token = localStorage.getItem('token');
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+      const response = await fetch(`${API_URL}/resources`, {
+        method: 'POST',
+        headers,
+        body: formData
+      });
+
+      // Try to parse JSON when available, otherwise read text for debugging
+      const contentType = response.headers.get('content-type') || '';
+      let data;
+      if (contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        // not JSON (likely HTML error page), read as text
+        const text = await response.text();
+        throw new Error(text || 'Upload failed: non-JSON response');
+      }
+
+      if (!response.ok) throw new Error(data.message || 'Upload failed');
+      return data;
+    } catch (err) {
+      console.error('resourcesAPI.upload error:', err);
+      throw err;
+    }
+  },
+
   delete: (id) => apiCall(`/resources/${id}`, {
     method: 'DELETE'
   })
@@ -167,6 +199,14 @@ export const adminAPI = {
   })
 };
 
+// Contacts API
+export const contactsAPI = {
+  create: (contactData) => apiCall('/contacts', {
+    method: 'POST',
+    body: JSON.stringify(contactData)
+  })
+};
+
 export default {
   authAPI,
   postsAPI,
@@ -175,4 +215,5 @@ export default {
   studyGroupsAPI,
   notificationsAPI,
   adminAPI
+  ,contactsAPI
 };
