@@ -1,17 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
+import { resourcesAPI } from '../../services/api';
 import './StudentDashboard.css';
 
 const StudentDashboard = () => {
   const { user } = useAuth();
-
-  // Removed seeded/demo data — components will show real data when connected to API
-  const recentNotes = [];
-
-  const topNotes = [];
+  const [recentNotes, setRecentNotes] = useState([]);
+  const [topNotes, setTopNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const notifications = [];
+
+  // Fetch recently uploaded and most downloaded notes
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        setLoading(true);
+        const result = await resourcesAPI.getAll();
+        const resources = result.resources || [];
+
+        // Get recently uploaded (sorted by createdAt, newest first)
+        const recent = resources
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 3);
+
+        // Get most downloaded (sorted by downloads count, highest first)
+        const mostDownloaded = resources
+          .sort((a, b) => (b.downloads || 0) - (a.downloads || 0))
+          .slice(0, 3);
+
+        setRecentNotes(recent);
+        setTopNotes(mostDownloaded);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to fetch notes:', err);
+        setError('Failed to load notes');
+        setRecentNotes([]);
+        setTopNotes([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNotes();
+  }, []);
 
   return (
     <div className="dashboard">
@@ -85,38 +119,63 @@ const StudentDashboard = () => {
         {/* Recently Uploaded Notes */}
         <div className="dashboard-section">
           <h2>📚 Recently Uploaded Notes</h2>
-          <div className="notes-grid">
-            {recentNotes.map(note => (
-              <div key={note.id} className="note-card">
-                <h4>{note.title}</h4>
-                <p className="note-subject">{note.subject}</p>
-                <div className="note-meta">
-                  <span>By: {note.uploadedBy}</span>
-                  <span>{note.downloads} downloads</span>
+          {loading ? (
+            <div className="loading-message">Loading notes...</div>
+          ) : error ? (
+            <div className="error-message">{error}</div>
+          ) : recentNotes.length === 0 ? (
+            <div className="empty-message">
+              <p>No notes available yet.</p>
+              <Link to="/browse" className="browse-link">Browse all resources →</Link>
+            </div>
+          ) : (
+            <div className="notes-grid">
+              {recentNotes.map(note => (
+                <div key={note._id} className="note-card">
+                  <h4>{note.title}</h4>
+                  <p className="note-subject">{note.subject || 'N/A'}</p>
+                  <p className="note-description">{note.description}</p>
+                  <div className="note-meta">
+                    <span>📤 {note.uploadedByName || 'Anonymous'}</span>
+                    <span>📥 {note.downloads || 0} downloads</span>
+                  </div>
+                  <div className="note-date">{new Date(note.createdAt).toLocaleDateString()}</div>
+                  <Link to={`/browse#${note._id}`} className="note-download-btn">View & Download</Link>
                 </div>
-                <div className="note-date">{note.uploadDate}</div>
-                <button className="note-download-btn">Download</button>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Most Downloaded Notes */}
         <div className="dashboard-section">
           <h2>🔥 Most Downloaded Notes</h2>
-          <div className="notes-grid">
-            {topNotes.map(note => (
-              <div key={note.id} className="note-card featured">
-                <h4>{note.title}</h4>
-                <p className="note-subject">{note.subject}</p>
-                <div className="note-meta">
-                  <span>⭐ {note.rating}</span>
-                  <span>{note.downloads} downloads</span>
+          {loading ? (
+            <div className="loading-message">Loading notes...</div>
+          ) : error ? (
+            <div className="error-message">{error}</div>
+          ) : topNotes.length === 0 ? (
+            <div className="empty-message">
+              <p>No popular notes yet.</p>
+              <Link to="/browse" className="browse-link">Browse all resources →</Link>
+            </div>
+          ) : (
+            <div className="notes-grid">
+              {topNotes.map(note => (
+                <div key={note._id} className="note-card featured">
+                  <div className="featured-badge">🔥 Popular</div>
+                  <h4>{note.title}</h4>
+                  <p className="note-subject">{note.subject || 'N/A'}</p>
+                  <p className="note-description">{note.description}</p>
+                  <div className="note-meta">
+                    <span>⭐ {note.downloads || 0} downloads</span>
+                    <span>📊 {note.category || 'Resource'}</span>
+                  </div>
+                  <Link to={`/browse#${note._id}`} className="note-download-btn">View & Download</Link>
                 </div>
-                <button className="note-download-btn">Download</button>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
