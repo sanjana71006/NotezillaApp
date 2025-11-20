@@ -129,19 +129,20 @@
 }
 
 .profile-dropdown-content .profile-pic-info h3 {
-  font-size: 1.1rem;
+  font-size: 1rem;
   margin: 6px 0 4px 0;
 }
 
 .profile-dropdown-content .profile-pic-info .role-badge {
   margin: 4px 0 6px 0;
-  font-size: 0.75rem;
-  padding: 4px 10px;
+  font-size: 0.7rem;
+  padding: 3px 8px;
 }
 
 .profile-dropdown-content .profile-pic-info .email {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   margin: 4px 0;
+  word-break: break-word;
 }
 
 .profile-pic-info h3 {
@@ -238,9 +239,10 @@
 }
 
 .profile-dropdown-content .form-section h3 {
-  font-size: 0.95rem;
-  margin: 0 0 8px 0;
-  padding-bottom: 6px;
+  font-size: 0.85rem;
+  margin: 0 0 6px 0;
+  padding-bottom: 4px;
+  border-bottom: none;
 }
 
 .section-note {
@@ -258,7 +260,7 @@
 }
 
 .profile-dropdown-content .form-group {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .form-group label {
@@ -268,8 +270,9 @@
 }
 
 .profile-dropdown-content .form-group label {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 500;
+  line-height: 1;
 }
 
 .form-group input {
@@ -283,8 +286,9 @@
 }
 
 .profile-dropdown-content .form-group input {
-  padding: 8px 10px;
-  font-size: 0.85rem;
+  padding: 6px 8px;
+  font-size: 0.8rem;
+  height: auto;
 }
 
 .form-group input:focus {
@@ -356,14 +360,16 @@
 
 .profile-dropdown-content .profile-actions {
   display: flex;
-  gap: 8px;
-  margin-top: 12px;
+  gap: 6px;
+  margin-top: 8px;
 }
 
 .profile-dropdown-content .profile-actions .btn {
   flex: 1;
-  padding: 8px 12px;
-  font-size: 0.85rem;
+  padding: 6px 8px;
+  font-size: 0.75rem;
+  min-height: auto;
+  height: 36px;
 }
 
 .btn {
