@@ -278,4 +278,4 @@ For issues, feature requests, or questions:
 
 **Last Updated**: November 2025  
 **Repo**: [sanjana71006/NotezillaApp](https://github.com/sanjana71006/NotezillaApp)  
-**Live Demo**: [Notezilla Frontend](https://notezilla-frontend-xxxxx.onrender.com)
+**Live Demo**: [Notezilla Frontend](https://notezilla-frontend.onrender.com/)
