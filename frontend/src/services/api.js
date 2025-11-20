@@ -50,6 +50,54 @@ export const authAPI = {
   getCurrentUser: () => apiCall('/auth/me')
 };
 
+// User Profile API calls
+export const userAPI = {
+  updateProfile: async (profileData) => {
+    const token = localStorage.getItem('token');
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+    const response = await fetch(`${API_URL}/auth/profile`, {
+      method: 'PUT',
+      headers,
+      body: profileData instanceof FormData ? profileData : JSON.stringify(profileData)
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || 'Update failed');
+    return data;
+  },
+
+  uploadProfilePic: async (formData) => {
+    try {
+      const token = localStorage.getItem('token');
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+      const response = await fetch(`${API_URL}/auth/profile-pic`, {
+        method: 'POST',
+        headers,
+        body: formData
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Upload failed');
+      return data;
+    } catch (err) {
+      console.error('Profile picture upload error:', err);
+      throw err;
+    }
+  },
+
+  changePassword: (passwordData) => apiCall('/auth/change-password', {
+    method: 'PUT',
+    body: JSON.stringify(passwordData)
+  }),
+
+  deleteAccount: (password) => apiCall('/auth/delete-account', {
+    method: 'DELETE',
+    body: JSON.stringify({ password })
+  })
+};
+
 // Posts API calls
 export const postsAPI = {
   getAll: () => apiCall('/posts'),

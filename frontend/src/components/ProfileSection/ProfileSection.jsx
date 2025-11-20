@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { userAPI } from '../../services/api';
 import './ProfileSection.css';
 
 const ProfileSection = ({ inDropdown = false, onSignOut = null }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     username: user?.username || '',
@@ -66,9 +67,25 @@ const ProfileSection = ({ inDropdown = false, onSignOut = null }) => {
         }
       }
 
-      // Here you would typically make an API call to update profile
-      // For now, we'll simulate success
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Upload profile picture if changed
+      if (profilePic) {
+        const formDataPic = new FormData();
+        formDataPic.append('profilePic', profilePic);
+        await userAPI.uploadProfilePic(formDataPic);
+      }
+
+      // Update other profile info
+      const updateData = {
+        username: formData.username,
+        email: formData.email
+      };
+
+      if (formData.newPassword) {
+        updateData.currentPassword = formData.currentPassword;
+        updateData.newPassword = formData.newPassword;
+      }
+
+      const result = await userAPI.updateProfile(updateData);
 
       setSuccess('Profile updated successfully!');
       setFormData(prev => ({
@@ -80,6 +97,11 @@ const ProfileSection = ({ inDropdown = false, onSignOut = null }) => {
       setProfilePic(null);
       setPreviewPic(null);
       setIsEditing(false);
+
+      // Update user in context
+      if (result.user) {
+        updateUser(result.user);
+      }
     } catch (err) {
       setError(err.message || 'Failed to update profile');
     } finally {
@@ -97,8 +119,7 @@ const ProfileSection = ({ inDropdown = false, onSignOut = null }) => {
     setError('');
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await userAPI.deleteAccount(deletePassword);
       
       setSuccess('Account deleted successfully. Logging out...');
       setTimeout(() => {
