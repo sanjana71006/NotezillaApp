@@ -3,7 +3,6 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
-import ThemeToggle from './components/ThemeToggle/ThemeToggle';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import Home from './Pages/Home/Home';
 import Login from './Pages/Login/Login';
@@ -43,8 +42,6 @@ function App() {
 
   return (
     <>
-      <ThemeToggle />
-      
       {!isAuthPage && <Header />}
       <main>
         <Routes>
