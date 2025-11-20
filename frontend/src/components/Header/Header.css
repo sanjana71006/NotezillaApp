@@ -144,14 +144,15 @@
 }
 
 .profile-dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
+  position: fixed;
+  top: auto;
+  right: 20px;
+  left: auto;
   background-color: var(--bg-secondary);
   border: 2px solid var(--primary-color);
   border-radius: 12px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-  z-index: 2000;
+  z-index: 9999;
   width: 420px;
   max-height: 85vh;
   overflow-y: auto;
@@ -259,6 +260,16 @@
 
 .dropdown-signout-btn:hover {
   background-color: #c0392b;
+}
+
+.dropdown-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 9998;
 }
 
 /* Mobile Responsive */

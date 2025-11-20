@@ -187,6 +187,13 @@
   background: #0056b3;
 }
 
+.profile-dropdown-content .upload-pic-btn,
+.profile-dropdown-content .cancel-pic-btn {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  margin-top: 6px;
+}
+
 /* Profile Form */
 .profile-form,
 .profile-info {
@@ -348,7 +355,15 @@
 }
 
 .profile-dropdown-content .profile-actions {
-  display: none;
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.profile-dropdown-content .profile-actions .btn {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 0.85rem;
 }
 
 .btn {

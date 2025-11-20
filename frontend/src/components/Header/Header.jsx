@@ -75,21 +75,27 @@ const Header = () => {
                   )}
                 </button>
                 {showProfileDropdown && (
-                  <div className="profile-dropdown">
-                    <button 
-                      className="dropdown-close"
+                  <>
+                    <div 
+                      className="dropdown-overlay"
                       onClick={() => setShowProfileDropdown(false)}
-                    >
-                      ×
-                    </button>
-                    <ProfileSection inDropdown={true} onSignOut={handleSignOut} />
-                    <button 
-                      className="dropdown-signout-btn"
-                      onClick={handleSignOut}
-                    >
-                      🚪 Sign Out
-                    </button>
-                  </div>
+                    />
+                    <div className="profile-dropdown">
+                      <button 
+                        className="dropdown-close"
+                        onClick={() => setShowProfileDropdown(false)}
+                      >
+                        ×
+                      </button>
+                      <ProfileSection inDropdown={true} onSignOut={handleSignOut} />
+                      <button 
+                        className="dropdown-signout-btn"
+                        onClick={handleSignOut}
+                      >
+                        🚪 Sign Out
+                      </button>
+                    </div>
+                  </>
                 )}
               </div>
             ) : (

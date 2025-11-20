@@ -309,24 +309,24 @@ const ProfileSection = ({ inDropdown = false, onSignOut = null }) => {
       </div>
 
       {/* Action Buttons */}
-      {!inDropdown && (
-        <div className="profile-actions">
-          {!isEditing && (
-            <button
-              className="btn btn-primary"
-              onClick={() => setIsEditing(true)}
-            >
-              Edit Profile
-            </button>
-          )}
+      <div className="profile-actions">
+        {!isEditing && (
+          <button
+            className="btn btn-primary"
+            onClick={() => setIsEditing(true)}
+          >
+            Edit Profile
+          </button>
+        )}
+        {!inDropdown && (
           <button
             className="btn btn-danger"
             onClick={() => setShowDeleteModal(true)}
           >
             Delete Account
           </button>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Delete Account Modal */}
       {showDeleteModal && (
