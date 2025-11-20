@@ -6,6 +6,10 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .primary {
@@ -17,6 +21,10 @@
   filter: brightness(1.1);
 }
 
+.primary:active {
+  transform: scale(0.98);
+}
+
 .secondary {
   background-color: transparent;
   color: var(--text-color);
@@ -26,4 +34,24 @@
 .secondary:hover {
   background-color: var(--primary-color);
   color: white;
+}
+
+.secondary:active {
+  transform: scale(0.98);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .button {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .button {
+    padding: 9px 18px;
+    font-size: 0.9rem;
+    min-height: 40px;
+  }
 }

@@ -30,6 +30,15 @@ body.dark {
   --border-color: #3B4A74;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+html {
+  /* Prevent zoom on iOS input focus */
+  font-size: 16px;
+}
+
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
@@ -38,14 +47,52 @@ body {
   background-color: var(--background-color);
   color: var(--text-color);
   transition: background-color 0.3s ease, color 0.3s ease;
+  line-height: 1.5;
 }
 
-* {
-  box-sizing: border-box;
+/* Touch-friendly input and button sizes */
+input, button, select, textarea {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+}
+
+button {
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+}
+
+/* Prevent layout shift from scrollbar */
+html {
+  overflow-y: scroll;
+}
+
+/* Mobile viewport meta optimization */
+@media (max-width: 576px) {
+  html {
+    font-size: 14px;
+  }
+  
+  body {
+    line-height: 1.6;
+  }
+  
+  .container {
+    padding: 0 12px;
+  }
 }

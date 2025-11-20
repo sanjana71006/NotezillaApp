@@ -55,6 +55,7 @@
 
 .auth-form button {
   width: 100%;
+  min-height: 44px;
 }
 
 .auth-link-text {
@@ -144,4 +145,100 @@
   font-size: 0.8rem;
   color: var(--text-color-darker);
   text-align: left;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .auth-page {
+    padding: 30px 12px;
+  }
+  
+  .auth-form-container {
+    padding: 28px;
+    border-radius: 10px;
+  }
+  
+  .auth-form-container h2 {
+    font-size: 1.75rem;
+  }
+  
+  .auth-form-container p {
+    font-size: 0.95rem;
+  }
+  
+  .auth-form {
+    gap: 16px;
+  }
+  
+  .auth-form input, .role-select {
+    padding: 11px 14px;
+    font-size: 16px;
+  }
+  
+  .predefined-accounts {
+    padding: 12px;
+    margin: 18px 0;
+  }
+  
+  .accounts-title {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .auth-page {
+    padding: 20px 10px;
+    min-height: 100vh;
+  }
+  
+  .auth-form-container {
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .auth-form-container h2 {
+    font-size: 1.5rem;
+  }
+  
+  .auth-form-container p {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+  
+  .auth-form {
+    gap: 14px;
+  }
+  
+  .auth-form input, .role-select {
+    padding: 10px 12px;
+    font-size: 16px;
+    border-radius: 6px;
+  }
+  
+  .auth-form button {
+    padding: 12px;
+  }
+  
+  .auth-link-text {
+    margin-top: 20px;
+    font-size: 0.9rem;
+  }
+  
+  .predefined-accounts {
+    padding: 10px;
+    margin: 15px 0;
+  }
+  
+  .account-info small {
+    font-size: 0.75rem;
+  }
+  
+  .password-requirements {
+    font-size: 0.75rem;
+    padding: 8px;
+  }
+  
+  .password-requirements p {
+    margin: 3px 0;
+  }
 }

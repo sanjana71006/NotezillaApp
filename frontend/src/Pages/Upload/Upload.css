@@ -352,21 +352,209 @@
 }
 
 @media (max-width: 768px) {
-  .form-row {
-    grid-template-columns: 1fr;
-    gap: 15px;
+  .upload-page {
+    padding: 12px 0;
+  }
+  
+  .container {
+    padding: 0 12px;
+  }
+  
+  .upload-header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .upload-header p {
+    font-size: 1rem;
+  }
+  
+  .upload-container {
+    gap: 20px;
   }
   
   .upload-form {
     padding: 20px;
   }
   
+  .form-group {
+    margin-bottom: 18px;
+  }
+  
+  .form-group label {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 11px 14px;
+    font-size: 16px;
+    border-radius: 8px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .character-count {
+    font-size: 0.75rem;
+  }
+  
+  .file-upload-content {
+    padding: 20px;
+  }
+  
+  .upload-icon {
+    font-size: 2.5rem;
+  }
+  
+  .file-requirements {
+    font-size: 0.75rem;
+  }
+  
   .file-selected {
     flex-direction: column;
     text-align: center;
+    padding: 12px;
+  }
+  
+  .file-icon {
+    font-size: 1.75rem;
+  }
+  
+  .remove-file-btn {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .checkbox-label {
+    font-size: 0.9rem;
+  }
+  
+  .draft-info {
+    margin-left: 24px;
+    font-size: 0.8rem;
   }
   
   .submit-buttons {
     justify-content: center;
+  }
+  
+  .submit-btn {
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    min-height: 44px;
+  }
+  
+  .upload-guidelines {
+    padding: 18px;
+  }
+  
+  .upload-guidelines h3 {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+  }
+  
+  .upload-guidelines li {
+    font-size: 0.9rem;
+    padding: 8px 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .upload-page {
+    padding: 8px 0;
+  }
+  
+  .container {
+    padding: 0 10px;
+  }
+  
+  .upload-header {
+    margin-bottom: 25px;
+  }
+  
+  .upload-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .upload-header p {
+    font-size: 0.95rem;
+  }
+  
+  .upload-form {
+    padding: 16px;
+  }
+  
+  .form-group {
+    margin-bottom: 16px;
+  }
+  
+  .form-group label {
+    font-size: 0.85rem;
+  }
+  
+  .file-upload-content {
+    padding: 16px;
+  }
+  
+  .upload-icon {
+    font-size: 2rem;
+  }
+  
+  .file-requirements {
+    font-size: 0.7rem;
+  }
+  
+  .form-actions {
+    margin-top: 20px;
+    padding-top: 15px;
+  }
+  
+  .checkbox-label {
+    gap: 8px;
+  }
+  
+  .submit-btn {
+    width: 100%;
+    padding: 14px 20px;
+  }
+  
+  .error-message {
+    font-size: 0.8rem;
+  }
+  
+  .upload-guidelines {
+    padding: 14px;
+    border-radius: 12px;
+  }
+  
+  .upload-guidelines h3 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+  
+  .upload-guidelines li {
+    font-size: 0.85rem;
+    padding: 7px 0;
+  }
+  
+  .upload-success {
+    padding: 40px 20px;
+    border-radius: 12px;
+  }
+  
+  .success-icon {
+    font-size: 3rem;
+  }
+  
+  .upload-success h2 {
+    font-size: 1.5rem;
+  }
+  
+  .upload-success p {
+    font-size: 0.95rem;
   }
 }
