@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Import Link and useNavigate
 import { useAuth } from '../../context/AuthContext'; // Import useAuth
 import Button from '../Button/Button';
+import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import './Header.css';
 
 const Header = () => {
@@ -52,24 +53,26 @@ const Header = () => {
             </>
           )}
         </nav>
-        <div className="auth-buttons">
-          {isAuthenticated ? (
-            <Button onClick={handleSignOut}>Sign Out</Button>
-          ) : (
-            <>
-              <Link to="/login" className="login-link">Login</Link>
-              <Link to="/signup">
-                <Button>Sign Up</Button>
-              </Link>
-            </>
-          )}
+        <div className="header-right">
+          <div className="theme-toggle-wrapper">
+            <ThemeToggle />
+          </div>
+          <div className="auth-buttons">
+            {isAuthenticated ? (
+              <Button onClick={handleSignOut}>Sign Out</Button>
+            ) : (
+              <>
+                <Link to="/login" className="login-link">Login</Link>
+                <Link to="/signup">
+                  <Button>Sign Up</Button>
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </header>
   );
 };
-
-// Add this to Header.css to style the logo link
-// .logo-link { text-decoration: none; }
 
 export default Header;
