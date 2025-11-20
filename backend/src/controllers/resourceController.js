@@ -14,19 +14,24 @@ exports.listResources = async (req, res) => {
 };
 
 exports.createResource = async (req, res) => {
-  const { title, description, tags } = req.body;
+  const { title, description, tags, year, semester, subject, examType, category } = req.body;
   const file = req.file; // multer sets this
   try {
     console.log('createResource invoked. file meta:', file);
     const resourceData = {
       title,
       description,
+      subject: subject || 'General',
+      year,
+      semester,
+      examType,
+      category,
       tags: tags ? tags.split(',').map(t=>t.trim()) : [],
-      uploadedBy: req.user ? req.user._id : undefined
+      uploadedBy: req.user ? req.user._id : undefined,
+      status: 'approved'
     };
 
     if (file) {
-      // Multer should have saved the file; verify it exists and capture metadata
       const fullPath = file.path || path.join(__dirname, '..', '..', 'uploads', file.filename);
       const exists = fs.existsSync(fullPath);
       console.log('Expected uploaded fullPath:', fullPath, 'exists:', exists);
@@ -45,7 +50,6 @@ exports.createResource = async (req, res) => {
     res.json({ resource });
   } catch (err) {
     console.error('createResource error:', err);
-    // Return the error message to the client to aid debugging
     return res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
@@ -77,7 +81,38 @@ exports.deleteResource = async (req, res) => {
   try {
     const resource = await Resource.findByIdAndDelete(req.params.id);
     if (!resource) return res.status(404).json({ message: 'Not found' });
+    if (resource.fileUrl) {
+      const filePath = path.join(__dirname, '..', '..', resource.fileUrl);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
     res.json({ message: 'Deleted' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+exports.downloadResource = async (req, res) => {
+  try {
+    const resource = await Resource.findById(req.params.id);
+    if (!resource || !resource.fileUrl) {
+      return res.status(404).json({ message: 'Resource or file not found' });
+    }
+
+    const filePath = path.join(__dirname, '..', '..', resource.fileUrl.startsWith('/') ? resource.fileUrl.slice(1) : resource.fileUrl);
+    const uploadsDir = path.join(__dirname, '..', '..', 'uploads');
+    if (!filePath.startsWith(uploadsDir)) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ message: 'File not found on server' });
+    }
+
+    await Resource.findByIdAndUpdate(req.params.id, { $inc: { downloads: 1 } });
+    res.download(filePath);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });

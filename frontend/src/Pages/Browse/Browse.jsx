@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Browse.css';
+import { resourcesAPI } from '../../services/api';
 
 const Browse = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -10,11 +11,9 @@ const Browse = () => {
     examType: '',
     category: ''
   });
-
-  // Removed seeded resource data — start with empty list and load from API
   const [resources, setResources] = useState([]);
-
-  const [filteredResources, setFilteredResources] = useState(resources);
+  const [loading, setLoading] = useState(true);
+  const [filteredResources, setFilteredResources] = useState([]);
 
   // Filter options
   const filterOptions = {
@@ -25,12 +24,30 @@ const Browse = () => {
     categories: ["Notes", "Question Papers", "Lab Manuals", "Assignments", "Projects"]
   };
 
-  // Search and filter logic
+  // Fetch resources from API on mount
+  useEffect(() => {
+    const fetchResources = async () => {
+      try {
+        setLoading(true);
+        const result = await resourcesAPI.getAll();
+        setResources(result.resources || []);
+      } catch (err) {
+        console.error('Failed to fetch resources:', err);
+        setResources([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchResources();
+  }, []);
+
+  // Filter and search logic
   useEffect(() => {
     let filtered = resources.filter(resource => {
-      const matchesSearch = resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           resource.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           resource.subject.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = 
+        (resource.title && resource.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (resource.description && resource.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (resource.subject && resource.subject.toLowerCase().includes(searchTerm.toLowerCase()));
       
       const matchesFilters = 
         (filters.year === '' || resource.year === filters.year) &&
@@ -63,15 +80,34 @@ const Browse = () => {
     setSearchTerm('');
   };
 
-  const handleDownload = (resourceId) => {
-    // Mock download functionality
-    const resource = resources.find(r => r.id === resourceId);
-    if (resource) {
-      // Update download count
-      setResources(prev => prev.map(r => 
-        r.id === resourceId ? { ...r, downloads: r.downloads + 1 } : r
-      ));
-      alert(`Downloading: ${resource.title}`);
+  const handleDownload = async (resourceId) => {
+    try {
+      // Make request to backend download endpoint
+      const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:5000/api');
+      const response = await fetch(`${API_URL}/resources/${resourceId}/download`);
+      
+      if (!response.ok) {
+        alert('Failed to download file');
+        return;
+      }
+
+      // Create a blob and download
+      const blob = await response.blob();
+      const resource = resources.find(r => r._id === resourceId);
+      const filename = resource?.title || 'download';
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Download error:', err);
+      alert('Failed to download file');
     }
   };
 
@@ -169,7 +205,11 @@ const Browse = () => {
 
         {/* Resources List */}
         <div className="resources-section">
-          {filteredResources.length === 0 ? (
+          {loading ? (
+            <div className="no-results">
+              <h3>Loading resources...</h3>
+            </div>
+          ) : filteredResources.length === 0 ? (
             <div className="no-results">
               <h3>No resources found</h3>
               <p>Try adjusting your search criteria or clearing filters</p>
@@ -177,55 +217,59 @@ const Browse = () => {
           ) : (
             <div className="resources-grid">
               {filteredResources.map(resource => (
-                <div key={resource.id} className="resource-card">
+                <div key={resource._id} className="resource-card">
                   <div className="resource-header">
                     <h3>{resource.title}</h3>
-                    <span className={`file-type ${resource.fileType.toLowerCase()}`}>
-                      {resource.fileType}
+                    <span className={`file-type ${(resource.fileType || 'pdf').toLowerCase()}`}>
+                      {resource.fileType || 'PDF'}
                     </span>
                   </div>
                   
-                  <p className="resource-description">{resource.description}</p>
+                  <p className="resource-description">{resource.description || 'No description'}</p>
                   
                   <div className="resource-meta">
-                    <div className="meta-row">
-                      <span className="meta-label">Subject:</span>
-                      <span className="meta-value">{resource.subject}</span>
-                    </div>
-                    <div className="meta-row">
-                      <span className="meta-label">Year/Semester:</span>
-                      <span className="meta-value">{resource.year}, {resource.semester}</span>
-                    </div>
-                    <div className="meta-row">
-                      <span className="meta-label">Exam Type:</span>
-                      <span className="meta-value">{resource.examType}</span>
-                    </div>
-                    <div className="meta-row">
-                      <span className="meta-label">Category:</span>
-                      <span className="meta-value">{resource.category}</span>
-                    </div>
+                    {resource.subject && (
+                      <div className="meta-row">
+                        <span className="meta-label">Subject:</span>
+                        <span className="meta-value">{resource.subject}</span>
+                      </div>
+                    )}
+                    {(resource.year || resource.semester) && (
+                      <div className="meta-row">
+                        <span className="meta-label">Year/Semester:</span>
+                        <span className="meta-value">{resource.year || 'N/A'}, {resource.semester || 'N/A'}</span>
+                      </div>
+                    )}
+                    {resource.examType && (
+                      <div className="meta-row">
+                        <span className="meta-label">Exam Type:</span>
+                        <span className="meta-value">{resource.examType}</span>
+                      </div>
+                    )}
+                    {resource.category && (
+                      <div className="meta-row">
+                        <span className="meta-label">Category:</span>
+                        <span className="meta-value">{resource.category}</span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="resource-footer">
                     <div className="resource-info">
                       <div className="uploader-info">
-                        <span>📤 {resource.uploadedBy}</span>
-                        <span className={`user-type ${resource.userType.toLowerCase()}`}>
-                          {resource.userType}
-                        </span>
+                        <span>📤 {resource.uploadedByName || 'Anonymous'}</span>
                       </div>
                       <div className="resource-stats">
-                        <span>📥 {resource.downloads} downloads</span>
-                        <span>📅 {resource.uploadDate}</span>
-                        <span>📊 {resource.size}</span>
+                        <span>📥 {resource.downloads || 0} downloads</span>
+                        <span>📅 {new Date(resource.createdAt).toLocaleDateString()}</span>
+                        {resource.fileSize && <span>📊 {(resource.fileSize / 1024).toFixed(2)} KB</span>}
                       </div>
                     </div>
                     
                     <div className="resource-actions">
-                      <button className="preview-btn">👁️ Preview</button>
                       <button 
                         className="download-btn"
-                        onClick={() => handleDownload(resource.id)}
+                        onClick={() => handleDownload(resource._id)}
                       >
                         ⬇️ Download
                       </button>
