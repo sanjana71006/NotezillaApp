@@ -2,8 +2,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
-// Backend API URL
-const API_URL = 'http://localhost:5000/api';
+// Backend API URL - use environment variable or fallback based on environment
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:5000/api');
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
