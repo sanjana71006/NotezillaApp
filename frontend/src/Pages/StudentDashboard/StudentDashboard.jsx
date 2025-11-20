@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { resourcesAPI } from '../../services/api';
+import ProfileSection from '../../components/ProfileSection/ProfileSection';
 import './StudentDashboard.css';
 
 const StudentDashboard = () => {
@@ -177,6 +178,9 @@ const StudentDashboard = () => {
             </div>
           )}
         </div>
+
+        {/* Profile Section */}
+        <ProfileSection />
       </div>
     </div>
   );
