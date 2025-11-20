@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Import Link and useNavigate
 import { useAuth } from '../../context/AuthContext'; // Import useAuth
 import Button from '../Button/Button';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
+import ProfileSection from '../ProfileSection/ProfileSection';
 import './Header.css';
 
 const Header = () => {
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   const handleSignOut = () => {
     logout();
+    setShowProfileDropdown(false);
     navigate('/signup');
   };
 
@@ -59,7 +62,36 @@ const Header = () => {
           </div>
           <div className="auth-buttons">
             {isAuthenticated ? (
-              <Button onClick={handleSignOut}>Sign Out</Button>
+              <div className="profile-dropdown-wrapper">
+                <button 
+                  className="profile-pic-button"
+                  onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                  title={user?.username}
+                >
+                  {user?.profilePic ? (
+                    <img src={user.profilePic} alt="Profile" className="profile-pic-img" />
+                  ) : (
+                    <span className="profile-pic-placeholder">👤</span>
+                  )}
+                </button>
+                {showProfileDropdown && (
+                  <div className="profile-dropdown">
+                    <button 
+                      className="dropdown-close"
+                      onClick={() => setShowProfileDropdown(false)}
+                    >
+                      ×
+                    </button>
+                    <ProfileSection inDropdown={true} onSignOut={handleSignOut} />
+                    <button 
+                      className="dropdown-signout-btn"
+                      onClick={handleSignOut}
+                    >
+                      🚪 Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               <>
                 <Link to="/login" className="login-link">Login</Link>

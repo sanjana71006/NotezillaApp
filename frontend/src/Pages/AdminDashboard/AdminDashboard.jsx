@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import ProfileSection from '../../components/ProfileSection/ProfileSection';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -163,7 +162,6 @@ const AdminDashboard = () => {
             ))}
           </div>
         </div>
-        <ProfileSection />
       </div>
     </div>
   );

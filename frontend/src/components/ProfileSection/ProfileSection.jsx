@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import './ProfileSection.css';
 
-const ProfileSection = () => {
+const ProfileSection = ({ inDropdown = false, onSignOut = null }) => {
   const { user, logout } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -102,7 +102,11 @@ const ProfileSection = () => {
       
       setSuccess('Account deleted successfully. Logging out...');
       setTimeout(() => {
-        logout();
+        if (onSignOut) {
+          onSignOut();
+        } else {
+          logout();
+        }
       }, 2000);
     } catch (err) {
       setError(err.message || 'Failed to delete account');
@@ -113,10 +117,12 @@ const ProfileSection = () => {
   };
 
   return (
-    <div className="profile-section">
-      <div className="profile-header">
-        <h2>👤 Profile Settings</h2>
-      </div>
+    <div className={`profile-section ${inDropdown ? 'profile-dropdown-content' : ''}`}>
+      {!inDropdown && (
+        <div className="profile-header">
+          <h2>👤 Profile Settings</h2>
+        </div>
+      )}
 
       {error && <div className="alert alert-error">{error}</div>}
       {success && <div className="alert alert-success">{success}</div>}
@@ -282,22 +288,24 @@ const ProfileSection = () => {
       </div>
 
       {/* Action Buttons */}
-      <div className="profile-actions">
-        {!isEditing && (
+      {!inDropdown && (
+        <div className="profile-actions">
+          {!isEditing && (
+            <button
+              className="btn btn-primary"
+              onClick={() => setIsEditing(true)}
+            >
+              Edit Profile
+            </button>
+          )}
           <button
-            className="btn btn-primary"
-            onClick={() => setIsEditing(true)}
+            className="btn btn-danger"
+            onClick={() => setShowDeleteModal(true)}
           >
-            Edit Profile
+            Delete Account
           </button>
-        )}
-        <button
-          className="btn btn-danger"
-          onClick={() => setShowDeleteModal(true)}
-        >
-          Delete Account
-        </button>
-      </div>
+        </div>
+      )}
 
       {/* Delete Account Modal */}
       {showDeleteModal && (

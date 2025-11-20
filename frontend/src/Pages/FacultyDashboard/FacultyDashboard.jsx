@@ -1,6 +1,5 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
-import ProfileSection from '../../components/ProfileSection/ProfileSection';
 import './FacultyDashboard.css';
 
 const FacultyDashboard = () => {
@@ -53,7 +52,6 @@ const FacultyDashboard = () => {
             </div>
           </div>
         </div>
-        <ProfileSection />
       </div>
     </div>
   );
