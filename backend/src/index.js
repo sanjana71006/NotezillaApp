@@ -62,18 +62,51 @@ app.use('/api/progress', progressRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/reports', reportRoutes);
 
-// Health
-app.get('/api/health', (req, res) => res.json({ ok: true }));
+// Health check endpoints
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'ok',
+    server: 'Notezilla Backend',
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'ok',
+    message: 'Backend is running',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(err.status || 500).json({ 
+    message: err.message || 'Server error',
+    error: process.env.NODE_ENV === 'development' ? err : {}
+  });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ message: 'Route not found' });
+});
 
 // Start
 const PORT = process.env.PORT || 5000;
 
 connectDB()
   .then(() => {
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`📊 Health check: http://localhost:${PORT}/health`);
+      console.log(`🔐 API: http://localhost:${PORT}/api`);
+    });
   })
   .catch((err) => {
-    console.error('Failed to connect to DB', err);
+    console.error('❌ Failed to connect to DB', err);
     process.exit(1);
   });
+
 
