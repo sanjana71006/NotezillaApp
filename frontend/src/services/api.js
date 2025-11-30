@@ -162,6 +162,41 @@ export const resourcesAPI = {
     }
   },
 
+  download: async (resourceId, title = 'download') => {
+    try {
+      const token = localStorage.getItem('token');
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+      const response = await fetch(`${API_URL}/resources/${resourceId}/download`, {
+        method: 'GET',
+        headers
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Download failed with status ${response.status}`);
+      }
+
+      // Get the blob
+      const blob = await response.blob();
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = title || 'download';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      return true;
+    } catch (err) {
+      console.error('resourcesAPI.download error:', err);
+      throw err;
+    }
+  },
+
   delete: (id) => apiCall(`/resources/${id}`, {
     method: 'DELETE'
   })

@@ -82,32 +82,13 @@ const Browse = () => {
 
   const handleDownload = async (resourceId) => {
     try {
-      // Make request to backend download endpoint
-      const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:5000/api');
-      const response = await fetch(`${API_URL}/resources/${resourceId}/download`);
-      
-      if (!response.ok) {
-        alert('Failed to download file');
-        return;
-      }
-
-      // Create a blob and download
-      const blob = await response.blob();
       const resource = resources.find(r => r._id === resourceId);
       const filename = resource?.title || 'download';
       
-      // Create download link
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+      await resourcesAPI.download(resourceId, filename);
     } catch (err) {
       console.error('Download error:', err);
-      alert('Failed to download file');
+      alert(`Failed to download file: ${err.message}`);
     }
   };
 

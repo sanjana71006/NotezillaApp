@@ -101,20 +101,39 @@ exports.downloadResource = async (req, res) => {
       return res.status(404).json({ message: 'Resource or file not found' });
     }
 
-    const filePath = path.join(__dirname, '..', '..', resource.fileUrl.startsWith('/') ? resource.fileUrl.slice(1) : resource.fileUrl);
+    // Parse the file path correctly
+    const fileUrlPath = resource.fileUrl.startsWith('/') ? resource.fileUrl.slice(1) : resource.fileUrl;
+    const filePath = path.join(__dirname, '..', '..', fileUrlPath);
     const uploadsDir = path.join(__dirname, '..', '..', 'uploads');
+    
+    console.log('Download requested for resource:', resource._id);
+    console.log('File URL from DB:', resource.fileUrl);
+    console.log('Computed file path:', filePath);
+    console.log('Uploads directory:', uploadsDir);
+    console.log('File exists:', fs.existsSync(filePath));
+
+    // Security check: ensure file is in uploads directory
     if (!filePath.startsWith(uploadsDir)) {
       return res.status(403).json({ message: 'Forbidden' });
     }
 
     if (!fs.existsSync(filePath)) {
+      console.error('File not found at path:', filePath);
       return res.status(404).json({ message: 'File not found on server' });
     }
 
+    // Increment download count
     await Resource.findByIdAndUpdate(req.params.id, { $inc: { downloads: 1 } });
+
+    // Set proper headers for file download
+    const filename = resource.title || path.basename(filePath);
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('Content-Type', resource.fileType || 'application/octet-stream');
+
+    // Send the file
     res.download(filePath);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Download error:', err);
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
