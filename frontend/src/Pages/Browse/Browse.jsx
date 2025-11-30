@@ -88,7 +88,15 @@ const Browse = () => {
       await resourcesAPI.download(resourceId, filename);
     } catch (err) {
       console.error('Download error:', err);
-      alert(`Failed to download file: ${err.message}`);
+      
+      // Provide helpful error message
+      if (err.message.includes('FILE_NOT_IN_DB')) {
+        alert('This file is not available yet. The file storage system was recently upgraded. Please contact the uploader to re-upload this resource.');
+      } else if (err.message.includes('404')) {
+        alert('File not found on server. This resource may have been deleted.');
+      } else {
+        alert(`Failed to download: ${err.message}`);
+      }
     }
   };
 

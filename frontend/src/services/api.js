@@ -173,8 +173,17 @@ export const resourcesAPI = {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Download failed with status ${response.status}`);
+        let errorData = {};
+        try {
+          errorData = await response.json();
+        } catch (e) {
+          // Response wasn't JSON
+        }
+        
+        const errorMessage = errorData.message || `Download failed with status ${response.status}`;
+        const error = new Error(errorMessage);
+        error.code = errorData.code;
+        throw error;
       }
 
       // Get the blob

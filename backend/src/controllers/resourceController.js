@@ -68,7 +68,15 @@ exports.getResource = async (req, res) => {
   try {
     const resource = await Resource.findById(req.params.id).populate('uploadedBy', 'username email role');
     if (!resource) return res.status(404).json({ message: 'Not found' });
-    res.json({ resource });
+    
+    // Include info about whether file is available
+    const hasFile = resource.fileData && resource.fileData.length > 0;
+    res.json({ 
+      resource: {
+        ...resource.toObject(),
+        fileAvailable: hasFile
+      }
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
@@ -117,7 +125,10 @@ exports.downloadResource = async (req, res) => {
   try {
     const resource = await Resource.findById(req.params.id);
     if (!resource) {
-      return res.status(404).json({ message: 'Resource not found' });
+      return res.status(404).json({ 
+        message: 'Resource not found',
+        code: 'RESOURCE_NOT_FOUND'
+      });
     }
 
     // Check if file is stored in MongoDB
@@ -139,40 +150,21 @@ exports.downloadResource = async (req, res) => {
       return;
     }
 
-    // Fallback: try to get file from disk (for backward compatibility)
-    if (!resource.fileUrl) {
-      return res.status(404).json({ message: 'File not found' });
-    }
+    // File not found in MongoDB - provide helpful message
+    console.log('File not found in MongoDB:', resource._id);
+    return res.status(404).json({ 
+      message: 'File not available for download. This resource was created before the file storage upgrade. Please ask the uploader to re-upload this file.',
+      code: 'FILE_NOT_IN_DB',
+      resourceTitle: resource.title,
+      uploadedBy: resource.uploadedBy
+    });
 
-    const fileUrlPath = resource.fileUrl.startsWith('/') ? resource.fileUrl.slice(1) : resource.fileUrl;
-    const filePath = path.join(__dirname, '..', '..', fileUrlPath);
-    const uploadsDir = path.join(__dirname, '..', '..', 'uploads');
-    
-    console.log('Download from disk:', resource._id);
-    console.log('File path:', filePath);
-
-    // Security check: ensure file is in uploads directory
-    if (!filePath.startsWith(uploadsDir)) {
-      return res.status(403).json({ message: 'Forbidden' });
-    }
-
-    if (!fs.existsSync(filePath)) {
-      console.error('File not found at path:', filePath);
-      return res.status(404).json({ message: 'File not found on server' });
-    }
-
-    // Increment download count
-    await Resource.findByIdAndUpdate(req.params.id, { $inc: { downloads: 1 } });
-
-    // Set proper headers for file download
-    const filename = resource.title || path.basename(filePath);
-    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-    res.setHeader('Content-Type', resource.fileType || 'application/octet-stream');
-
-    // Send the file
-    res.download(filePath);
   } catch (err) {
     console.error('Download error:', err);
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res.status(500).json({ 
+      message: 'Server error', 
+      error: err.message,
+      code: 'DOWNLOAD_ERROR'
+    });
   }
 };
