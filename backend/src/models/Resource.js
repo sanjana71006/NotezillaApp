@@ -5,6 +5,7 @@ const ResourceSchema = new mongoose.Schema({
   description: { type: String },
   subject: { type: String, required: true },
   fileUrl: { type: String },
+  fileData: { type: Buffer }, // Store actual file data in MongoDB
   uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   tags: [String],
   downloads: { type: Number, default: 0 },

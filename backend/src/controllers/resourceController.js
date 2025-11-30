@@ -32,18 +32,28 @@ exports.createResource = async (req, res) => {
     };
 
     if (file) {
-      const fullPath = file.path || path.join(__dirname, '..', '..', 'uploads', file.filename);
-      const exists = fs.existsSync(fullPath);
-      console.log('Expected uploaded fullPath:', fullPath, 'exists:', exists);
-      if (!exists) {
-        console.error('Uploaded file missing at expected path:', fullPath);
-        return res.status(500).json({ message: 'Uploaded file missing on server', path: fullPath });
-      }
-
-      const stats = fs.statSync(fullPath);
-      resourceData.fileUrl = `/uploads/${file.filename}`;
-      resourceData.fileSize = stats.size;
+      // Read file from disk and store in MongoDB
+      const fileData = fs.readFileSync(file.path);
+      resourceData.fileData = fileData;
+      resourceData.fileSize = file.size;
       resourceData.fileType = file.mimetype || '';
+      
+      // Also keep fileUrl for backward compatibility, but now it references the filename
+      resourceData.fileUrl = file.originalname;
+      
+      console.log('File stored in MongoDB:', {
+        originalName: file.originalname,
+        size: file.size,
+        mimetype: file.mimetype,
+        buffer: fileData.length
+      });
+      
+      // Delete from disk after storing in DB (optional, can keep as backup)
+      try {
+        fs.unlinkSync(file.path);
+      } catch (err) {
+        console.warn('Could not delete temp file:', file.path);
+      }
     }
 
     const resource = await Resource.create(resourceData);
@@ -81,12 +91,21 @@ exports.deleteResource = async (req, res) => {
   try {
     const resource = await Resource.findByIdAndDelete(req.params.id);
     if (!resource) return res.status(404).json({ message: 'Not found' });
-    if (resource.fileUrl) {
+    
+    // File is automatically deleted when resource is deleted from MongoDB
+    // No need to manually delete disk files since they're stored in DB
+    if (resource.fileUrl && !resource.fileData) {
+      // Only delete disk files if file is NOT in MongoDB
       const filePath = path.join(__dirname, '..', '..', resource.fileUrl);
       if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+        try {
+          fs.unlinkSync(filePath);
+        } catch (err) {
+          console.warn('Could not delete file:', filePath);
+        }
       }
     }
+    
     res.json({ message: 'Deleted' });
   } catch (err) {
     console.error(err);
@@ -97,20 +116,40 @@ exports.deleteResource = async (req, res) => {
 exports.downloadResource = async (req, res) => {
   try {
     const resource = await Resource.findById(req.params.id);
-    if (!resource || !resource.fileUrl) {
-      return res.status(404).json({ message: 'Resource or file not found' });
+    if (!resource) {
+      return res.status(404).json({ message: 'Resource not found' });
     }
 
-    // Parse the file path correctly
+    // Check if file is stored in MongoDB
+    if (resource.fileData && resource.fileData.length > 0) {
+      // File is stored in MongoDB
+      console.log('Download from MongoDB:', resource._id, resource.fileUrl);
+      
+      // Increment download count
+      await Resource.findByIdAndUpdate(req.params.id, { $inc: { downloads: 1 } });
+
+      // Set proper headers for file download
+      const filename = resource.title || resource.fileUrl;
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      res.setHeader('Content-Type', resource.fileType || 'application/octet-stream');
+      res.setHeader('Content-Length', resource.fileData.length);
+
+      // Send the file data
+      res.send(resource.fileData);
+      return;
+    }
+
+    // Fallback: try to get file from disk (for backward compatibility)
+    if (!resource.fileUrl) {
+      return res.status(404).json({ message: 'File not found' });
+    }
+
     const fileUrlPath = resource.fileUrl.startsWith('/') ? resource.fileUrl.slice(1) : resource.fileUrl;
     const filePath = path.join(__dirname, '..', '..', fileUrlPath);
     const uploadsDir = path.join(__dirname, '..', '..', 'uploads');
     
-    console.log('Download requested for resource:', resource._id);
-    console.log('File URL from DB:', resource.fileUrl);
-    console.log('Computed file path:', filePath);
-    console.log('Uploads directory:', uploadsDir);
-    console.log('File exists:', fs.existsSync(filePath));
+    console.log('Download from disk:', resource._id);
+    console.log('File path:', filePath);
 
     // Security check: ensure file is in uploads directory
     if (!filePath.startsWith(uploadsDir)) {
