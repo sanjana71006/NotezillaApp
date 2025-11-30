@@ -22,7 +22,21 @@ const reportRoutes = require('./routes/reports');
 const app = express();
 
 // Middlewares
-app.use(cors());
+// Configure CORS to allow requests from frontend deployments
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://localhost:5000',
+    'https://notezilla-app.vercel.app',
+    'https://notezilla-frontend.onrender.com'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morgan('dev'));
 
